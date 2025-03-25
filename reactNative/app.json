@@ -1,0 +1,42 @@
+{
+  "expo": {
+    "name": "Prestaire",
+    "slug": "prestataire",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/plomb1.jpg",
+    "scheme": "myapp",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true
+      
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/elec2.jpg",
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/elec2.jpg"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/elec2.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff"
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
