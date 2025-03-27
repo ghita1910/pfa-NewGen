@@ -49,6 +49,28 @@ import selectedMarker from "@/assets/icons/selected-marker.png";
 import star from "@/assets/icons/star.png";
 import target from "@/assets/icons/target.png";
 import to from "@/assets/icons/to.png";
+import facebook from "@/assets/icons/facebook.webp";
+import X from "@/assets/icons/x.png";
+import insta from "@/assets/icons/instagram.jpeg";
+import apple from "@/assets/icons/apple.png";
+
+import check1 from "@/assets/icons/check.jpg";
+import param from "@/assets/icons/param.jpg";
+import backk1 from "@/assets/images/backk1.avif"
+
+import maison from "@/assets/images/maison.avif"
+import house from "@/assets/images/house.jpg"
+import OIp from "@/assets/images/OIP.jpeg"
+
+
+import service from "@/assets/images/service.webp"
+import satisfaction from "@/assets/images/satisfaction.jpg"
+import rep from "@/assets/images/reparation.jpg"
+
+import join from "@/assets/images/joinus.jpg"
+
+
+
 
 // Centralisé dans un seul export
 export const images = {
@@ -69,6 +91,14 @@ export const images = {
   plomb2,
   plomb3,
   ombording,
+  backk1,
+  maison,
+  house,
+  OIp,
+  service,
+  satisfaction,
+  rep,
+  join
 };
 
 
@@ -102,6 +132,12 @@ export const icons = {
   star,
   target,
   to,
+  X,
+  facebook,
+  insta,
+  apple,
+  check1,
+  param
 };
 
 export const onboarding = [
@@ -110,21 +146,21 @@ export const onboarding = [
     title: "We provide professional services at a friendly price",
     description:
       "Access qualified service providers at affordable prices, from plumbing to electrical work, all tailored to your budget.",
-    image: images.ombording,
+    image: images.service,
   },
   {
     id: 2,
     title: "the best result and your satisfaction is our priority",
     description:
       "Compare offers based on distance, price, and reviews to ensure the best results and your satisfaction.",
-    image: images.onb2,
+    image: images.satisfaction,
   },
   {
     id: 3,
     title: "Lest's make awesome changes to your Home!",
     description:
       "Easily find specialized service providers to transform your home, from repairs to renovations.",
-    image: images.onb3,
+    image: images.OIp,
   },
 ];
 

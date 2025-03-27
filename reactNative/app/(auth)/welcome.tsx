@@ -1,6 +1,13 @@
 import { router } from "expo-router";
 import { useRef, useState } from "react";
-import { Image, Text, TouchableOpacity, View, StyleSheet } from "react-native";
+import {
+  Animated,
+  Image,
+  Text,
+  TouchableOpacity,
+  View,
+  StyleSheet,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Swiper from "react-native-swiper";
 
@@ -15,6 +22,7 @@ const Onboarding = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* Skip Button */}
       <TouchableOpacity
         onPress={() => router.replace("/(auth)/signinoptions")}
         style={styles.skipButton}
@@ -22,11 +30,12 @@ const Onboarding = () => {
         <Text style={styles.skipText}>Skip</Text>
       </TouchableOpacity>
 
+      {/* Swiper */}
       <Swiper
         ref={swiperRef}
         loop={false}
-        dot={<View style={styles.dot} />}
-        activeDot={<View style={styles.activeDot} />}
+        scrollEnabled={true}
+        showsPagination={false}
         onIndexChanged={(index) => setActiveIndex(index)}
       >
         {onboarding.map((item) => (
@@ -44,20 +53,36 @@ const Onboarding = () => {
         ))}
       </Swiper>
 
+      {/* Custom Dots */}
+      <View style={styles.dotsContainer}>
+        {onboarding.map((_, index) => (
+          <View key={index} style={styles.dotWrapper}>
+            <Animated.View
+              style={[
+                styles.dotBase,
+                activeIndex === index ? styles.activeDot : null,
+              ]}
+            />
+          </View>
+        ))}
+      </View>
+
+      {/* Next / Get Started Button */}
       <CustomButton
-  title={isLastSlide ? "Get Started" : "Next"}
-  onPress={() =>
-    isLastSlide
-      ? router.replace("/(auth)/signinoptions")
-      : swiperRef.current?.scrollBy(1)
-  }
-  style={styles.button} // ✅ Maintenant, ça fonctionne !
-/>
+        title={isLastSlide ? "Get Started" : "Next"}
+        onPress={() =>
+          isLastSlide
+            ? router.replace("/(auth)/signinoptions")
+            : swiperRef.current?.scrollBy(1)
+        }
+        style={styles.button}
+      />
     </SafeAreaView>
   );
 };
 
 export default Onboarding;
+
 
 const styles = StyleSheet.create({
   container: {
@@ -76,20 +101,6 @@ const styles = StyleSheet.create({
     color: "black",
     fontSize: 16,
     fontWeight: "bold",
-  },
-  dot: {
-    width: 32,
-    height: 4,
-    marginHorizontal: 5,
-    backgroundColor: "#E2E8F0",
-    borderRadius: 10,
-  },
-  activeDot: {
-    width: 32,
-    height: 4,
-    marginHorizontal: 5,
-    backgroundColor: "#0286FF",
-    borderRadius: 10,
   },
   slide: {
     flex: 1,
@@ -125,6 +136,27 @@ const styles = StyleSheet.create({
   button: {
     width: "90%",
     marginTop: 10,
+    marginBottom: 20,
+  },
+
+  // Dots
+  dotsContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
     marginBottom: 10,
+  },
+  dotWrapper: {
+    marginHorizontal: 6,
+  },
+  dotBase: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "#C4C4C4",
+  },
+  activeDot: {
+    width: 24,
+    backgroundColor: "#0286FF",
   },
 });
