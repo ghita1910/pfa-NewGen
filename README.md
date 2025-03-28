@@ -1,1 +1,1 @@
-"Application Mobile : Gestion des prestataires"
+"Application Mobile : Gestio"
