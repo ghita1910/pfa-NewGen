@@ -12,6 +12,8 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
+
+
 import Svg, { Path } from "react-native-svg";
 
 import CustomButton from "@/components/CustomButton";
@@ -45,7 +47,7 @@ const SignUp = () => {
           keyboardShouldPersistTaps="handled"
         >
           <Image
-            source={images.ombording}
+            source={images.tourn}
             style={styles.illustration}
             resizeMode="contain"
           />
@@ -54,14 +56,7 @@ const SignUp = () => {
             <Text style={styles.title}>Sign Up</Text>
             <Text style={styles.subtitle}>Create a new account</Text>
 
-            <View style={styles.row}>
-              <View style={styles.flexOne}>
-                <InputField label="First Name" placeholder="First Name" icon={icons.person} />
-              </View>
-              <View style={styles.flexOne}>
-                <InputField label="Last Name" placeholder="Last Name" icon={icons.person} />
-              </View>
-            </View>
+           
 
             <TouchableOpacity onPress={() => setUsePhone(!usePhone)} style={styles.toggleContainer}>
               <Text style={styles.toggleText}>
@@ -90,7 +85,7 @@ const SignUp = () => {
               <Text style={styles.checkboxText}>Send me promotional offers & updates</Text>
             </TouchableOpacity>
 
-            <CustomButton title="Sign Up" onPress={handleSignUp} style={styles.button} />
+            <CustomButton title="Next" onPress={handleSignUp} style={styles.button}  />
 
             <TouchableOpacity onPress={() => router.push("/(auth)/signin")} style={styles.loginTextContainer}>
               <Text style={styles.signUpText}>
@@ -168,14 +163,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 28,
   },
-  row: {
-    flexDirection: "row",
-    width: "100%",
-    gap: 12,
-  },
-  flexOne: {
-    flex: 1,
-  },
+ 
   toggleContainer: {
     marginVertical: 10,
   },
