@@ -24,7 +24,7 @@ const SignInOptions = () => {
       </TouchableOpacity>
 
       {/* Illustration */}
-      <Image source={images.ombording} style={styles.illustration} resizeMode="contain" />
+      <Image source={images.tourn} style={styles.illustration} resizeMode="contain" />
 
       {/* Title */}
       <Text style={styles.title}>Let’s you in</Text>

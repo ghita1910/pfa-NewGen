@@ -66,5 +66,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#000",
     paddingVertical: 12,
+    textAlign: "left", 
   },
 });

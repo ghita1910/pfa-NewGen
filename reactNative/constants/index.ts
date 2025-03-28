@@ -11,6 +11,8 @@ import onb2 from "@/assets/images/onb2.avif";
 import onb2jpg from "@/assets/images/onb2.jpg";
 import onb3 from "@/assets/images/onb3.jpg";
 import onb11 from "@/assets/images/onb11.avif";
+import birth from "@/assets/icons/birth.png";
+
 
 import peint1 from "@/assets/images/peint1.avif";
 import peint2 from "@/assets/images/peint2.avif";
@@ -43,6 +45,9 @@ import out from "@/assets/icons/out.png";
 import person from "@/assets/icons/person.png";
 import pin from "@/assets/icons/pin.png";
 import point from "@/assets/icons/point.png";
+import locatin from "@/assets/icons/locatin.png";
+
+
 import profile from "@/assets/icons/profile.png";
 import search from "@/assets/icons/search.png";
 import selectedMarker from "@/assets/icons/selected-marker.png";
@@ -57,10 +62,13 @@ import apple from "@/assets/icons/apple.png";
 import check1 from "@/assets/icons/check.jpg";
 import param from "@/assets/icons/param.jpg";
 import backk1 from "@/assets/images/backk1.avif"
+import tourn from "@/assets/images/tourn.png"
 
 import maison from "@/assets/images/maison.avif"
 import house from "@/assets/images/house.jpg"
 import OIp from "@/assets/images/OIP.jpeg"
+import maisonnn from "@/assets/images/misonn.png"
+import wave from "@/assets/images/wave.jpeg"
 
 
 import service from "@/assets/images/service.webp"
@@ -68,6 +76,10 @@ import satisfaction from "@/assets/images/satisfaction.jpg"
 import rep from "@/assets/images/reparation.jpg"
 
 import join from "@/assets/images/joinus.jpg"
+import fleche from "@/assets/images/fleche.avif"
+
+import cam from "@/assets/icons/cam.png"
+
 
 
 
@@ -98,7 +110,12 @@ export const images = {
   service,
   satisfaction,
   rep,
-  join
+  join,
+  fleche,
+  tourn,
+  maisonnn,
+  wave,
+ 
 };
 
 
@@ -137,7 +154,10 @@ export const icons = {
   insta,
   apple,
   check1,
-  param
+  param,
+  locatin,
+  birth,
+  cam
 };
 
 export const onboarding = [

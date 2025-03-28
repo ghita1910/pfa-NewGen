@@ -15,7 +15,12 @@ import InputField from "@/components/InputField";
 import { icons, images } from "@/constants"; // Assurez-vous que ce fichier contient tes icônes et images
 
 const SignIn = () => {
+  
   const router = useRouter();
+
+  const handleForgotPassword = () => {
+    router.push("/(auth)/forgotpassword"); // Remplacez par le chemin de la page Forgot Password
+  };
 
   return (
     <ImageBackground
@@ -54,9 +59,10 @@ const SignIn = () => {
               style={styles.signInGradient}
             />
 
-            <TouchableOpacity>
-              <Text style={styles.forgotPassword}>Forgot Password?</Text>
-            </TouchableOpacity>
+<TouchableOpacity onPress={handleForgotPassword}>
+        <Text style={styles.forgotPassword}>Forgot Password?</Text>
+      </TouchableOpacity>
+
           </View>
 
           <View style={styles.separator}>
