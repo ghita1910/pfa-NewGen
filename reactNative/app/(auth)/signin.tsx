@@ -1,57 +1,123 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
   ImageBackground,
-  Image,
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";  // Import AsyncStorage
 
 import CustomButton from "@/components/CustomButton";
 import InputField from "@/components/InputField";
-import { icons, images } from "@/constants"; // Assurez-vous que ce fichier contient tes icônes et images
+import { icons } from "@/constants"; // Assurez-vous que ce fichier contient tes icônes et images
+import config from "../../config";
 
 const SignIn = () => {
   const router = useRouter();
 
+  // États pour les champs du formulaire
+  const [emailOrPhone, setEmailOrPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSignIn = async () => {
+    setIsLoading(true);
+    setErrorMessage(""); // Réinitialiser les erreurs
+  
+    // Validation
+    if (!emailOrPhone || !password) {
+      setErrorMessage("Les deux champs sont requis.");
+      setIsLoading(false);
+      return;
+    }
+  
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(emailOrPhone)) {
+      setErrorMessage("Veuillez entrer un email valide.");
+      setIsLoading(false);
+      return;
+    }
+  
+    try {
+      const apiUrl = config.getApiUrl();  // Récupérer l'URL dynamique
+      console.log('URL utilisée:', apiUrl);
+      
+
+      console.log("Envoi de la demande de connexion...");
+
+      const response = await axios.post("http://10.10.1.190:8000/auth/signin", {
+        email: emailOrPhone,
+        password: password,
+      });
+  
+      console.log("Réponse du serveur:", response.status);
+      console.log("Données de la réponse:", response.data);
+  
+      // Vérifie si `access_token` est dans la réponse
+      if (response.data.access_token) {
+        const { access_token } = response.data;
+  
+        // Enregistrer le token JWT dans AsyncStorage
+        await AsyncStorage.setItem("access_token", access_token);
+        // Rediriger l'utilisateur vers une autre page après connexion réussie
+        router.push("/(auth)/signinoptions");
+      } else {
+        setErrorMessage("Token d'accès manquant dans la réponse");
+      }
+    } catch (error) {
+      console.log("Erreur lors de la connexion:", error);
+      setIsLoading(false);
+      const err = error as any;
+      if (err.response && err.response.data) {
+        setErrorMessage(err.response.data.detail || "Erreur inconnue");
+      } else {
+        setErrorMessage("Erreur de connexion");
+      }
+    }
+  };
+  
+
   return (
-    <ImageBackground
-   
-      style={styles.background}
-      resizeMode="cover"
-    >
-
-        
-
-
+    <ImageBackground style={styles.background} resizeMode="cover">
       <SafeAreaView style={styles.container}>
         <Text style={styles.title}>Hello, {"\n"}Sign in!</Text>
 
         {/* Formulaire */}
         <View style={styles.formContainer}>
           <InputField
-            label="Email"
-            placeholder="Enter Your Email"
-            icon={icons.email}
+            label="Email or Phone"
+            placeholder="Enter Your Email or Phone"
+            value={emailOrPhone}
+            onChangeText={setEmailOrPhone}
+            icon={icons.email} // Tu peux mettre un icône adapté pour email ou téléphone
           />
 
           <InputField
             label="Password"
             placeholder="Password"
             secureTextEntry
+            value={password}
+            onChangeText={setPassword}
             icon={icons.lock}
           />
 
+          {errorMessage ? (
+            <Text style={styles.errorText}>{errorMessage}</Text>
+          ) : null}
+
           <View style={styles.buttonContainer}>
             <CustomButton
-              title="Sign In"
-              onPress={() => router.push("/(auth)/signup")}
+              title={"Sign In"}
+              onPress={handleSignIn}
               bgVariant="primary"
               textVariant="default"
               style={styles.signInGradient}
+              
             />
 
             <TouchableOpacity>
@@ -59,33 +125,16 @@ const SignIn = () => {
             </TouchableOpacity>
           </View>
 
+          {/* Séparateur et social login */}
           <View style={styles.separator}>
             <View style={styles.line} />
             <Text style={styles.separatorText}>or continue with</Text>
             <View style={styles.line} />
           </View>
-
-          <View style={styles.socialLoginContainer}>
-            <TouchableOpacity style={styles.socialButton}>
-              <Image source={icons.google} style={styles.socialIcon} />
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.socialButton}>
-              <Image source={icons.insta} style={styles.socialIcon} />
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.socialButton}>
-              <Image source={icons.facebook} style={styles.socialIcon} />
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.socialButton}>
-              <Image source={icons.X} style={styles.socialIcon} />
-            </TouchableOpacity>
-          </View>
         </View>
 
         <Text style={styles.signUpText}>
-          Don’t have an account? {" "}
+          Don’t have an account?{" "}
           <Text
             style={styles.signUpLink}
             onPress={() => router.push("/(auth)/signup")}
@@ -114,7 +163,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 42,
     fontWeight: "bold",
-    left:15,
     color: "black",
     textAlign: "left",
     marginTop: 50,
@@ -137,17 +185,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 30,
     backgroundColor: "#007AFF",
-    shadowColor: "#007AFF",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
-    elevation: 5,
   },
   forgotPassword: {
     fontSize: 14,
     color: "#007AFF",
     fontWeight: "500",
     textDecorationLine: "underline",
+  },
+  errorText: {
+    color: "red",
+    fontSize: 14,
+    marginTop: 10,
+    textAlign: "center",
   },
   separator: {
     flexDirection: "row",
@@ -163,31 +212,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     fontSize: 14,
     color: "#6B7280",
-    fontWeight: "600",
-  },
-  socialLoginContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    marginTop: 10,
-  },
-  socialButton: {
-    width: 54,
-    height: 54,
-    borderRadius: 16,
-    backgroundColor: "#F1F5F9",
-    justifyContent: "center",
-    alignItems: "center",
-    marginHorizontal: 8,
-    shadowColor: "#000",
-    shadowOpacity: 0.06,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  socialIcon: {
-    width: 28,
-    height: 28,
-    resizeMode: "contain",
   },
   signUpText: {
     fontSize: 14,

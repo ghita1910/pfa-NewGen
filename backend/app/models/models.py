@@ -11,7 +11,7 @@ class Utilisateur(Base):
     email = Column(String(255))
     tel = Column(String(20))
     adresse = Column(Text)
-
+    role = Column(String(20), default="client")  # Rôle par défaut à 'client'
     comptes = relationship("Compte", back_populates="utilisateur")
     factures = relationship("Facture", back_populates="utilisateur")
     prestataire = relationship("Prestataire", back_populates="utilisateur", uselist=False)
