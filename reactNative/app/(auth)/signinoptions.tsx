@@ -27,7 +27,7 @@ const SignInOptions = () => {
       <Image source={images.tourn} style={styles.illustration} resizeMode="contain" />
 
       {/* Title */}
-      <Text style={styles.title}>Let’s you in</Text>
+      <Text style={styles.title}>Let's you in</Text>
 
       {/* Social Buttons */}
       <View style={styles.socialContainer}>
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   signUpLink: {
-    color: "#7C3AED", // Indigo-Violet
+    color: "#0286FF", // Indigo-Violet
     fontWeight: "bold",
     fontSize: 14,
   },

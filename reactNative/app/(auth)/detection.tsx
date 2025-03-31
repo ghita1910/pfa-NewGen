@@ -39,7 +39,7 @@ const SelectRoleScreen = () => {
 
         <TouchableOpacity
           style={styles.card}
-          onPress={() => router.push("/(auth)/sign-up?role=provider")}
+          onPress={() => router.push("/(auth)/signupprovider")}
         >
           {icons.person && (
             <Image source={icons.person} style={styles.cardIcon} resizeMode="contain" />
@@ -100,6 +100,7 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
     letterSpacing: 0.5,
   },
+  
   cardWrapper: {
     flex: 1,
     justifyContent: "center",

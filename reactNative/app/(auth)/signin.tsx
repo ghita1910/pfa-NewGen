@@ -9,6 +9,8 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+
 
 import CustomButton from "@/components/CustomButton";
 import InputField from "@/components/InputField";
@@ -28,11 +30,15 @@ const SignIn = () => {
       style={styles.background}
       resizeMode="cover"
     >
+      
 
         
 
 
       <SafeAreaView style={styles.container}>
+      <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+                <Ionicons name="chevron-back" size={22} color="#fff" />
+              </TouchableOpacity>
         <Text style={styles.title}>Hello, {"\n"}Sign in!</Text>
 
         {/* Formulaire */}
@@ -204,5 +210,16 @@ const styles = StyleSheet.create({
   signUpLink: {
     color: "#0284C7",
     fontWeight: "bold",
+  },
+  backButton: {
+    backgroundColor: "#1F2937",
+    borderRadius: 24,
+    padding: 8,
+    marginRight: 300,
+    elevation: 6,
+    shadowColor: "#000",
+    shadowOpacity: 0.15,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 6,
   },
 });

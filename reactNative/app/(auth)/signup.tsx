@@ -12,13 +12,10 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
-
-
-import Svg, { Path } from "react-native-svg";
-
 import CustomButton from "@/components/CustomButton";
 import InputField from "@/components/InputField";
 import { icons, images } from "@/constants";
+import { Ionicons } from "@expo/vector-icons";
 
 const SignUp = () => {
   const router = useRouter();
@@ -27,17 +24,24 @@ const SignUp = () => {
   const [agreeMarketing, setAgreeMarketing] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const handleSignUp = () => {
-    if (!agreeTerms || !agreeMarketing) {
+    if (!agreeTerms) {
       setShowModal(true);
       return;
     }
     console.log("Sign Up logic...");
-    router.push("/(auth)/detection"); // Redirect to detection.tsx
+    router.push("/(auth)/detection");
   };
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+        <Ionicons name="chevron-back" size={22} color="#fff" />
+      </TouchableOpacity>
+
       <KeyboardAvoidingView
         style={styles.container}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
@@ -56,63 +60,139 @@ const SignUp = () => {
             <Text style={styles.title}>Sign Up</Text>
             <Text style={styles.subtitle}>Create a new account</Text>
 
-           
-
-            <TouchableOpacity onPress={() => setUsePhone(!usePhone)} style={styles.toggleContainer}>
+            <TouchableOpacity
+              onPress={() => setUsePhone(!usePhone)}
+              style={styles.toggleContainer}
+            >
               <Text style={styles.toggleText}>
                 {usePhone ? "Use Email instead" : "Use Phone Number instead"}
               </Text>
             </TouchableOpacity>
 
             {usePhone ? (
-              <InputField label="Phone Number" placeholder="Enter phone number" keyboardType="phone-pad" icon={icons.chat} />
+              <InputField
+                label="Phone Number"
+                placeholder="Enter phone number"
+                keyboardType="phone-pad"
+                icon={icons.chat}
+              />
             ) : (
-              <InputField label="Email" placeholder="Enter email" keyboardType="email-address" icon={icons.email} />
+              <InputField
+                label="Email"
+                placeholder="Enter email"
+                keyboardType="email-address"
+                icon={icons.email}
+              />
             )}
 
-            <InputField label="Password" placeholder="Password" secureTextEntry icon={icons.lock} />
-            <InputField label="Confirm Password" placeholder="Confirm Password" secureTextEntry icon={icons.lock} />
+            {/* Password Field */}
+            <View style={styles.passwordContainer}>
+              <InputField
+                label="Password"
+                placeholder="Enter Password"
+                secureTextEntry={!showPassword}
+                icon={icons.lock}
+              />
+              <TouchableOpacity
+                style={styles.eyeIcon}
+                onPress={() => setShowPassword(!showPassword)}
+              >
+                <Ionicons
+                  name={showPassword ? "eye-off" : "eye"}
+                  size={22}
+                  color="#94A3B8"
+                />
+              </TouchableOpacity>
+            </View>
 
-            <TouchableOpacity style={styles.checkboxContainer} onPress={() => setAgreeTerms(!agreeTerms)}>
+            {/* Confirm Password Field */}
+            <View style={styles.passwordContainer}>
+              <InputField
+                label="Confirm Password"
+                placeholder="Confirm Password"
+                secureTextEntry={!showConfirmPassword}
+                icon={icons.lock}
+              />
+              <TouchableOpacity
+                style={styles.eyeIcon}
+                onPress={() =>
+                  setShowConfirmPassword(!showConfirmPassword)
+                }
+              >
+                <Ionicons
+                  name={showConfirmPassword ? "eye-off" : "eye"}
+                  size={22}
+                  color="#94A3B8"
+                />
+              </TouchableOpacity>
+            </View>
+
+            {/* Terms & Conditions */}
+            <TouchableOpacity
+              style={styles.checkboxContainer}
+              onPress={() => setAgreeTerms(!agreeTerms)}
+            >
               <View style={[styles.checkbox, agreeTerms && styles.checked]} />
               <Text style={styles.checkboxText}>
-                I accept the <Text style={styles.linkText}>Terms & Conditions</Text>
+                I accept the{" "}
+                <Text
+                  style={styles.linkText}
+                  onPress={() => router.push("/(auth)/termsconditions")}
+                >
+                  Terms & Conditions
+                </Text>
               </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.checkboxContainer} onPress={() => setAgreeMarketing(!agreeMarketing)}>
-              <View style={[styles.checkbox, agreeMarketing && styles.checked]} />
-              <Text style={styles.checkboxText}>Send me promotional offers & updates</Text>
+            <TouchableOpacity
+              style={styles.checkboxContainer}
+              onPress={() => setAgreeMarketing(!agreeMarketing)}
+            >
+              {/* Optional marketing agreement */}
             </TouchableOpacity>
 
-            <CustomButton title="Next" onPress={handleSignUp} style={styles.button}  />
+            <CustomButton
+              title="Next"
+              onPress={handleSignUp}
+              style={styles.button}
+            />
 
-            <TouchableOpacity onPress={() => router.push("/(auth)/signin")} style={styles.loginTextContainer}>
+            <TouchableOpacity
+              onPress={() => router.push("/(auth)/signin")}
+              style={styles.loginTextContainer}
+            >
               <Text style={styles.signUpText}>
-                       Already have an account? {" "}
-                       <Text
-                         style={styles.signUpLink}
-                         onPress={() => router.push("/(auth)/signin")}
-                       >
-                         Log in
-                       </Text>
-                     </Text>
-
+                Already have an account?{" "}
+                <Text style={styles.signUpLink}>Log in</Text>
+              </Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
 
-        <Modal transparent visible={showModal} animationType="fade" onRequestClose={() => setShowModal(false)}>
+        {/* Modal */}
+        <Modal
+          transparent
+          visible={showModal}
+          animationType="fade"
+          onRequestClose={() => setShowModal(false)}
+        >
           <View style={styles.modalOverlay}>
             <View style={styles.modalBox}>
               <View style={styles.iconWrapper}>
                 <Image source={icons.home} style={styles.modalIcon} />
               </View>
-              <Text style={styles.modalTitle}>Please accept terms and conditions</Text>
-              <Text style={styles.modalMessage}>
-                It is compulsory you accept our terms and conditions before we get you started on our app
+              <Text style={styles.modalTitle}>
+                Please accept terms and conditions
               </Text>
-              <CustomButton title="OK" onPress={() => setShowModal(false)} style={styles.modalButton} />
+              <Text style={styles.modalMessage}>
+                It is compulsory you accept our terms and conditions before we
+                get you started on our app
+              </Text>
+              <CustomButton
+                title="OK"
+                onPress={() => setShowModal(false)}
+                style={styles.modalButton}
+              />
             </View>
           </View>
         </Modal>
@@ -126,15 +206,10 @@ export default SignUp;
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "# D3D3D3",
+    backgroundColor: "#FFFFFF",
   },
   container: {
     flex: 1,
-  },
-  illustration: {
-    width: "100%",
-    height: 200,
-    alignSelf: "center",
   },
   scrollContainer: {
     flexGrow: 1,
@@ -142,6 +217,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 24,
     paddingBottom: 20,
+  },
+  illustration: {
+    width: "100%",
+    height: 200,
+    alignSelf: "center",
   },
   innerContainer: {
     width: "100%",
@@ -154,7 +234,6 @@ const styles = StyleSheet.create({
     color: "#1E293B",
     textAlign: "center",
     marginBottom: 8,
-    textDecorationLine: "underline",
   },
   subtitle: {
     fontSize: 16,
@@ -163,7 +242,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 28,
   },
- 
   toggleContainer: {
     marginVertical: 10,
   },
@@ -171,6 +249,17 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#3B82F6",
     fontWeight: "600",
+  },
+  passwordContainer: {
+    width: "100%",
+    marginTop: 16,
+    position: "relative",
+  },
+  eyeIcon: {
+    position: "absolute",
+    right: 12,
+    top: 52, // ajuste cette valeur si nécessaire
+    zIndex: 1,
   },
   checkboxContainer: {
     flexDirection: "row",
@@ -208,10 +297,27 @@ const styles = StyleSheet.create({
   loginTextContainer: {
     marginTop: 16,
   },
-  loginText: {
-    fontSize: 15,
-    color: "#2563EB",
-    fontWeight: "600",
+  signUpText: {
+    fontSize: 14,
+    textAlign: "center",
+    marginBottom: 20,
+    color: "#475569",
+  },
+  signUpLink: {
+    color: "#0284C7",
+    fontWeight: "bold",
+  },
+  backButton: {
+    backgroundColor: "#1F2937",
+    borderRadius: 24,
+    padding: 8,
+    marginRight: 340,
+    marginLeft: 8,
+    elevation: 6,
+    shadowColor: "#000",
+    shadowOpacity: 0.15,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 6,
   },
   modalOverlay: {
     flex: 1,
@@ -253,15 +359,4 @@ const styles = StyleSheet.create({
     width: "100%",
     marginTop: 10,
   },
-  signUpText: {
-    fontSize: 14,
-    textAlign: "center",
-    marginBottom: 20,
-    color: "#475569",
-  },
-  signUpLink: {
-    color: "#0284C7",
-    fontWeight: "bold",
-  },
-  
 });
