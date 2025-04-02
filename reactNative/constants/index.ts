@@ -21,6 +21,8 @@ import peint3 from "@/assets/images/peint3.avif";
 import plomb1 from "@/assets/images/plomb1.jpg";
 import plomb2 from "@/assets/images/plomb2.avif";
 import plomb3 from "@/assets/images/plomb3.avif";
+import chekkk from "@/assets/icons/cheekk.jpg";
+
 
 
 import ombording from "@/assets/images/onboarding2.png"
@@ -46,6 +48,7 @@ import person from "@/assets/icons/person.png";
 import pin from "@/assets/icons/pin.png";
 import point from "@/assets/icons/point.png";
 import locatin from "@/assets/icons/locatin.png";
+import ckeckbll from "@/assets/icons/checkbleu.svg";
 
 
 import profile from "@/assets/icons/profile.png";
@@ -58,27 +61,47 @@ import facebook from "@/assets/icons/facebook.webp";
 import X from "@/assets/icons/x.png";
 import insta from "@/assets/icons/instagram.jpeg";
 import apple from "@/assets/icons/apple.png";
+import terme1 from "@/assets/icons/term1.jpg";
 
 import check1 from "@/assets/icons/check.jpg";
 import param from "@/assets/icons/param.jpg";
 import backk1 from "@/assets/images/backk1.avif"
 import tourn from "@/assets/images/tourn.png"
+import neww from "@/assets/images/new.jpeg"
 
 import maison from "@/assets/images/maison.avif"
 import house from "@/assets/images/house.jpg"
 import OIp from "@/assets/images/OIP.jpeg"
 import maisonnn from "@/assets/images/misonn.png"
 import wave from "@/assets/images/wave.jpeg"
+import prof from "@/assets/images/prof.png"
+
+import meak1 from "@/assets/images/meak11.png"
 
 
 import service from "@/assets/images/service.webp"
 import satisfaction from "@/assets/images/satisfaction.jpg"
 import rep from "@/assets/images/reparation.jpg"
+import servv from "@/assets/images/servv.jpg"
+import meak from "@/assets/images/meak.jpg"
 
 import join from "@/assets/images/joinus.jpg"
 import fleche from "@/assets/images/fleche.avif"
 
 import cam from "@/assets/icons/cam.png"
+import checkno from "@/assets/icons/checknoir.svg"
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -115,6 +138,11 @@ export const images = {
   tourn,
   maisonnn,
   wave,
+  servv,
+  neww,
+  prof,
+  meak,
+  meak1
  
 };
 
@@ -157,8 +185,16 @@ export const icons = {
   param,
   locatin,
   birth,
-  cam
+  cam,
+  terme1,
+  chekkk,
+  checkno,
+  ckeckbll
 };
+
+
+
+
 
 export const onboarding = [
   {
@@ -166,7 +202,7 @@ export const onboarding = [
     title: "We provide professional services at a friendly price",
     description:
       "Access qualified service providers at affordable prices, from plumbing to electrical work, all tailored to your budget.",
-    image: images.service,
+    image: images.prof,
   },
   {
     id: 2,
