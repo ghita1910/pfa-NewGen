@@ -22,11 +22,14 @@ class Compte(Base):
 
     compteID = Column(Integer, primary_key=True, index=True)
     email = Column(String(255))
+    username = Column(String(50), unique=True)  # ← ajouté ici
     password = Column(String(255))
     tel = Column(String(20))
-    utilisateurID = Column(Integer, ForeignKey("Utilisateur.utilisateurID"))
+    utilisateurID = Column(Integer, ForeignKey("Utilisateur.utilisateurID"), nullable=True)
+
 
     utilisateur = relationship("Utilisateur", back_populates="comptes")
+
 
 
 class DemandeService(Base):
@@ -84,3 +87,4 @@ class Facture(Base):
 
     utilisateur = relationship("Utilisateur", back_populates="factures")
     demande = relationship("DemandeService", back_populates="factures")
+

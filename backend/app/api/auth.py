@@ -43,6 +43,28 @@ def sign_in(data: CompteLogin, db: Session = Depends(get_db)):
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
+from app.services.utilisateur_service import authenticate_admin
+from app.schemas.compte_schema import CompteLogin
+
+
+@router.post("/admin-login")
+def admin_login(data: CompteLogin, db: Session = Depends(get_db)):
+    try:
+        compte = authenticate_admin(db, email=data.email, password=data.password)
+
+        # ✅ Créer le token JWT avec l'email de l'admin
+        access_token = create_access_token(data={"sub": data.email, "role": "admin"})
+
+        return {
+            "access_token": access_token,
+            "token_type": "bearer",
+            "email": compte.email,
+            "tel": compte.tel,
+            "username": compte.username
+        }
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
 
 
 # Exemple de route protégée

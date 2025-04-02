@@ -9,6 +9,7 @@ class CompteCreate(BaseModel):
     nom: str
     prenom: str
     adresse: str
+    username: str
     role: str
 
     # ✅ Vérifier que le téléphone est bien formaté
@@ -24,12 +25,15 @@ class CompteCreate(BaseModel):
 
 
 class CompteOut(BaseModel):
-    email: EmailStr
-    tel: str
+    email: Optional[EmailStr] = None
+    tel: Optional[str] = None
+    username: str
+    isAdmin: bool  
 
     model_config = {
         "from_attributes": True
     }
+
 
 
 class CompteLogin(BaseModel):
