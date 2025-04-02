@@ -11,8 +11,9 @@ import {
   ScrollView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
+import { useRouter,useFocusEffect } from "expo-router";
 
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import Svg, { Path } from "react-native-svg";
 
@@ -23,96 +24,79 @@ import { icons, images } from "@/constants";
 const SignUp = () => {
   const router = useRouter();
   const [usePhone, setUsePhone] = useState(false);
+  const [emailOrPhone, setEmailOrPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [agreeMarketing, setAgreeMarketing] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
-  const handleSignUp = () => {
+  useFocusEffect(
+    React.useCallback(() => {
+      AsyncStorage.removeItem('signupData');  // Supprime tout à chaque retour
+    }, [])
+  );
+
+  const handleSignUp = async () => {
     if (!agreeTerms || !agreeMarketing) {
       setShowModal(true);
       return;
     }
-    console.log("Sign Up logic...");
-    router.push("/(auth)/detection"); // Redirect to detection.tsx
+
+    await AsyncStorage.setItem('signupData', JSON.stringify({
+      email: usePhone ? null : emailOrPhone,
+      tel: usePhone ? emailOrPhone : null,
+      password: password,
+    }));
+
+    router.push("/(auth)/detection");
   };
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <KeyboardAvoidingView
-        style={styles.container}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-      >
-        <ScrollView
-          contentContainerStyle={styles.scrollContainer}
-          keyboardShouldPersistTaps="handled"
-        >
-          <Image
-            source={images.tourn}
-            style={styles.illustration}
-            resizeMode="contain"
+      <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : undefined}>
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <Image source={images.tourn} style={styles.illustration} resizeMode="contain" />
+          <Text style={styles.title}>Sign Up</Text>
+          <Text style={styles.subtitle}>Create a new account</Text>
+
+          <TouchableOpacity onPress={() => setUsePhone(!usePhone)} style={styles.toggleContainer}>
+            <Text style={styles.toggleText}>
+              {usePhone ? "Use Email instead" : "Use Phone Number instead"}
+            </Text>
+          </TouchableOpacity>
+
+          <InputField
+            label={usePhone ? "Phone Number" : "Email"}
+            placeholder={usePhone ? "Enter phone number" : "Enter email"}
+            keyboardType={usePhone ? "phone-pad" : "email-address"}
+            icon={usePhone ? icons.chat : icons.email}
+            value={emailOrPhone}
+            onChangeText={setEmailOrPhone}
           />
 
-          <View style={styles.innerContainer}>
-            <Text style={styles.title}>Sign Up</Text>
-            <Text style={styles.subtitle}>Create a new account</Text>
+          <InputField label="Password" placeholder="Password" secureTextEntry icon={icons.lock} value={password} onChangeText={setPassword} />
+          <InputField label="Confirm Password" placeholder="Confirm Password" secureTextEntry icon={icons.lock} value={confirmPassword} onChangeText={setConfirmPassword} />
 
-           
+          <TouchableOpacity style={styles.checkboxContainer} onPress={() => setAgreeTerms(!agreeTerms)}>
+            <View style={[styles.checkbox, agreeTerms && styles.checked]} />
+            <Text style={styles.checkboxText}>
+              I accept the <Text style={styles.linkText}>Terms & Conditions</Text>
+            </Text>
+          </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => setUsePhone(!usePhone)} style={styles.toggleContainer}>
-              <Text style={styles.toggleText}>
-                {usePhone ? "Use Email instead" : "Use Phone Number instead"}
-              </Text>
-            </TouchableOpacity>
+          <TouchableOpacity style={styles.checkboxContainer} onPress={() => setAgreeMarketing(!agreeMarketing)}>
+            <View style={[styles.checkbox, agreeMarketing && styles.checked]} />
+            <Text style={styles.checkboxText}>Send me promotional offers & updates</Text>
+          </TouchableOpacity>
 
-            {usePhone ? (
-              <InputField label="Phone Number" placeholder="Enter phone number" keyboardType="phone-pad" icon={icons.chat} />
-            ) : (
-              <InputField label="Email" placeholder="Enter email" keyboardType="email-address" icon={icons.email} />
-            )}
-
-            <InputField label="Password" placeholder="Password" secureTextEntry icon={icons.lock} />
-            <InputField label="Confirm Password" placeholder="Confirm Password" secureTextEntry icon={icons.lock} />
-
-            <TouchableOpacity style={styles.checkboxContainer} onPress={() => setAgreeTerms(!agreeTerms)}>
-              <View style={[styles.checkbox, agreeTerms && styles.checked]} />
-              <Text style={styles.checkboxText}>
-                I accept the <Text style={styles.linkText}>Terms & Conditions</Text>
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.checkboxContainer} onPress={() => setAgreeMarketing(!agreeMarketing)}>
-              <View style={[styles.checkbox, agreeMarketing && styles.checked]} />
-              <Text style={styles.checkboxText}>Send me promotional offers & updates</Text>
-            </TouchableOpacity>
-
-            <CustomButton title="Next" onPress={handleSignUp} style={styles.button}  />
-
-            <TouchableOpacity onPress={() => router.push("/(auth)/signin")} style={styles.loginTextContainer}>
-              <Text style={styles.signUpText}>
-                       Already have an account? {" "}
-                       <Text
-                         style={styles.signUpLink}
-                         onPress={() => router.push("/(auth)/signin")}
-                       >
-                         Log in
-                       </Text>
-                     </Text>
-
-            </TouchableOpacity>
-          </View>
+          <CustomButton title="Next" onPress={handleSignUp} style={styles.button} />
         </ScrollView>
-
-        <Modal transparent visible={showModal} animationType="fade" onRequestClose={() => setShowModal(false)}>
+        <Modal transparent visible={showModal}>
           <View style={styles.modalOverlay}>
             <View style={styles.modalBox}>
-              <View style={styles.iconWrapper}>
-                <Image source={icons.home} style={styles.modalIcon} />
-              </View>
               <Text style={styles.modalTitle}>Please accept terms and conditions</Text>
-              <Text style={styles.modalMessage}>
-                It is compulsory you accept our terms and conditions before we get you started on our app
-              </Text>
-              <CustomButton title="OK" onPress={() => setShowModal(false)} style={styles.modalButton} />
+              <CustomButton title="OK" onPress={() => setShowModal(false)} />
             </View>
           </View>
         </Modal>

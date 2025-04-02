@@ -2,15 +2,38 @@ import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+
 import { icons } from "@/constants";
+import { useRouter, useFocusEffect } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const SelectRoleScreen = () => {
   const router = useRouter();
 
+  useFocusEffect(
+    React.useCallback(() => {
+      const clearRole = async () => {
+        const storedData = await AsyncStorage.getItem('signupData');
+        if (storedData) {
+          const data = JSON.parse(storedData);
+          delete data.role;
+          await AsyncStorage.setItem('signupData', JSON.stringify(data));
+        }
+      };
+      clearRole();
+    }, [])
+  );
+
+  const selectRole = async (role: string, path: string) => {
+    const storedData = await AsyncStorage.getItem('signupData');
+    const data = storedData ? JSON.parse(storedData) : {};
+    data.role = role;
+    await AsyncStorage.setItem('signupData', JSON.stringify(data));
+    router.push(path);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
           <Ionicons name="chevron-back" size={22} color="#fff" />
@@ -18,48 +41,34 @@ const SelectRoleScreen = () => {
         <Text style={styles.headerTitle}>Select Your Role</Text>
       </View>
 
-      {/* Role Cards */}
       <View style={styles.cardWrapper}>
         <TouchableOpacity
           style={styles.card}
-          onPress={() => router.push("/(auth)/signinclient")}
+          onPress={() => selectRole("customer", "/(auth)/signinclient")}
         >
-          {icons.person && (
-            <Image source={icons.person} style={styles.cardIcon} resizeMode="contain" />
-          )}
+          <Image source={icons.person} style={styles.cardIcon} resizeMode="contain" />
           <Text style={styles.cardTitle}>Customer</Text>
           <View style={styles.separator} />
           <Text style={styles.cardDescription}>
-            As a Customer, you can:{"\n"}
-            - Book services{"\n"}
-            - Manage your bookings{"\n"}
-            - Rate service providers
+            As a Customer, you can:{"\n"}- Book services{"\n"}- Manage your bookings{"\n"}- Rate service providers
           </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.card}
-          onPress={() => router.push("/(auth)/sign-up?role=provider")}
+          onPress={() => selectRole("provider", "./sign-up?role=provider")}
         >
-          {icons.person && (
-            <Image source={icons.person} style={styles.cardIcon} resizeMode="contain" />
-          )}
+          <Image source={icons.person} style={styles.cardIcon} resizeMode="contain" />
           <Text style={styles.cardTitle}>Service Provider</Text>
           <View style={styles.separator} />
           <Text style={styles.cardDescription}>
-            As a Service Provider, you can:{"\n"}
-            - Offer services{"\n"}
-            - Manage earnings{"\n"}
-            - Interact with customers
+            As a Service Provider, you can:{"\n"}- Offer services{"\n"}- Manage earnings{"\n"}- Interact with customers
           </Text>
         </TouchableOpacity>
       </View>
 
-      {/* Footer */}
       <View style={styles.footer}>
-        {icons.param && (
-          <Image source={icons.check1} style={styles.footerIcon} resizeMode="contain" />
-        )}
+        <Image source={icons.check1} style={styles.footerIcon} resizeMode="contain" />
         <Text style={styles.footerText}>
           The role you choose will determine your experience on the platform. Please choose carefully.
         </Text>

@@ -13,7 +13,6 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as ImagePicker from "expo-image-picker";
-import DateTimePicker from "@react-native-community/datetimepicker";
 
 import InputField from "@/components/InputField";
 import CustomButton from "@/components/CustomButton";
@@ -27,30 +26,39 @@ const UserProfile = () => {
   const [address, setAddress] = useState("");
   const [gender, setGender] = useState("Male");
   const [birthDate, setBirthDate] = useState(new Date());
+  const [age, setAge] = useState(""); // Add age state
   const [showDatePicker, setShowDatePicker] = useState(false);
-  // Removed duplicate declaration of progress and setProgress
-  // Removed duplicate declaration of progress and setProgress
+  const [progress, setProgress] = useState(new Animated.Value(0));
+  const [showImagePicker, setShowImagePicker] = useState(false); // State for image picker modal visibility
+  const [imageSelected, setImageSelected] = useState(false); // To track if an image is selected
+  const [showSuccessModal, setShowSuccessModal] = useState(false); // Success modal state
 
-  // Demander l'autorisation de la caméra à l'ouverture de l'écran
+  // Function to calculate and update progress based on filled fields
+  const calculateProgress = () => {
+    let filledFields = 0;
+
+    // Check each field's completion status
+    if (username) filledFields++;
+    if (firstName) filledFields++;
+    if (lastName) filledFields++;
+    if (address) filledFields++;
+    if (gender) filledFields++;
+    if (age) filledFields++; // Include age in the progress calculation
+
+    // Calculate the progress as a percentage
+    const progressPercentage = (filledFields / 6) * 100; // Update to 6 since age is now included
+
+    // Animate the progress bar
+    Animated.timing(progress, {
+      toValue: progressPercentage,
+      duration: 500,
+      useNativeDriver: false,
+    }).start();
+  };
+
   useEffect(() => {
-    const requestPermissions = async () => {
-      // Demander la permission pour la caméra
-      const { status: cameraStatus } = await ImagePicker.requestCameraPermissionsAsync();
-      // Demander la permission pour la galerie
-      const { status: galleryStatus } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-      if (cameraStatus !== "granted") {
-        alert("Permission to access camera is required!");
-      }
-
-      if (galleryStatus !== "granted") {
-        alert("Permission to access gallery is required!");
-      }
-    };
-
-
-    requestPermissions();
-  }, []);
+    calculateProgress();
+  }, [username, firstName, lastName, address, gender, age]); // Update the dependencies to include age
 
   const pickImage = async (source: "camera" | "gallery") => {
     let result;
@@ -68,77 +76,42 @@ const UserProfile = () => {
       });
     }
 
-    // Vérifier si la sélection a été réussie
     if (!result.canceled && result.assets && result.assets.length > 0) {
       setProfileImage({ uri: result.assets[0].uri });
-      setShowImagePicker(false);  // Fermer le modal après la sélection
+      setImageSelected(true);
+      setShowImagePicker(false);
     } else {
-      setShowImagePicker(false);  // Fermer le modal même si aucune image n'est sélectionnée
+      setShowImagePicker(false);
     }
   };
 
   const deleteImage = () => {
-    setProfileImage(images.clean1); // Réinitialiser l'image de profil à l'image par défaut
-    setShowImagePicker(false); // Fermer le modal après la suppression
+    setProfileImage(images.clean1);
+    setImageSelected(false);
+    setShowImagePicker(false);
   };
 
-  const onDateChange = (event: any, selectedDate: Date | undefined) => {
-    const currentDate = selectedDate || birthDate;
-    setShowDatePicker(false);
-    setBirthDate(currentDate);
+  const handleSaveProfile = () => {
+    setShowSuccessModal(true); // Show success modal when Save Profile is clicked
   };
-  const [progress, setProgress] = useState(new Animated.Value(0));
-  const [showImagePicker, setShowImagePicker] = useState(false); // State for image picker modal visibility
-
-// Function to calculate and update progress based on filled fields
-const calculateProgress = () => {
-  let filledFields = 0;
-
-  // Check each field's completion status
-  if (username) filledFields++;
-  if (firstName) filledFields++;
-  if (lastName) filledFields++;
-  if (address) filledFields++;
-  if (gender) filledFields++;
-
-  // Calculate the progress as a percentage
-  const progressPercentage = (filledFields / 5) * 100;
-
-  // Animate the progress bar
-  Animated.timing(progress, {
-    toValue: progressPercentage,
-    duration: 500,
-    useNativeDriver: false,
-  }).start();
-};
-
-useEffect(() => {
-  calculateProgress();
-}, [username, firstName, lastName, address, gender]);
-
 
   return (
-    
     <SafeAreaView style={styles.container}>
-      
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={styles.keyboardAvoiding}
       >
         <ScrollView contentContainerStyle={styles.scrollView}>
-        <Image
-                  source={images.tourn}
-                  style={styles.illustration}
-                  resizeMode="contain"
-                />
           <View style={styles.headerContainer}>
             <Image source={profileImage} style={styles.profileImage} />
-            <TouchableOpacity
-              style={styles.cameraIcon}
-              onPress={() => setShowImagePicker(true)}
-            >
-              <Image source={icons.cam} style={styles.cameraIconImage} />
-            </TouchableOpacity>
+            {!imageSelected && (
+              <TouchableOpacity
+                style={styles.cameraIcon}
+                onPress={() => setShowImagePicker(true)}
+              >
+                <Image source={icons.cam} style={styles.cameraIconImage} />
+              </TouchableOpacity>
+            )}
           </View>
 
           <InputField
@@ -148,7 +121,6 @@ useEffect(() => {
             onChangeText={setUsername}
             icon={icons.person}
           />
-
           <InputField
             label="First Name"
             placeholder="Enter first name"
@@ -156,7 +128,6 @@ useEffect(() => {
             onChangeText={setFirstName}
             icon={icons.person}
           />
-
           <InputField
             label="Last Name"
             placeholder="Enter last name"
@@ -164,7 +135,6 @@ useEffect(() => {
             onChangeText={setLastName}
             icon={icons.person}
           />
-
           <InputField
             label="Address"
             placeholder="Enter address"
@@ -172,49 +142,76 @@ useEffect(() => {
             onChangeText={setAddress}
             icon={icons.locatin}
           />
-
           <InputField
-            label="Birth Date"
+            label="Age"
             placeholder="Enter age"
+            value={age}
+            onChangeText={setAge}
             icon={icons.birth}
           />
 
+          <Text style={styles.genderText}>Gender</Text>
           <View style={styles.genderContainer}>
             {["Male", "Female"].map((item) => (
               <TouchableOpacity
                 key={item}
-                style={[
-                  styles.genderOption,
-                  gender === item && styles.genderSelected,
-                ]}
+                style={[styles.genderOption, gender === item && styles.genderSelected]}
                 onPress={() => setGender(item)}
               >
-                <Text style={styles.genderText}>{item}</Text>
+                <Text style={[styles.genderText, gender === item && styles.genderSelectedText]}>
+                  {item}
+                </Text>
               </TouchableOpacity>
             ))}
-            
           </View>
+
           <Text style={styles.progressText}>Profile Completion</Text>
           <View style={styles.progressBarContainer}>
-  
-  <Animated.View
-    style={[styles.progressBar, { width: progress.interpolate({
-        inputRange: [0, 100],
-        outputRange: ['0%', '100%'],
-      })
-    }]}
-  />
-</View>
-          
+            <Animated.View
+              style={[
+                styles.progressBar,
+                {
+                  width: progress.interpolate({
+                    inputRange: [0, 100],
+                    outputRange: ["0%", "100%"],
+                  }),
+                },
+              ]}
+            />
+          </View>
 
           <CustomButton
             title="Save Profile"
-            onPress={() => console.log("Profile Saved")}
+            onPress={handleSaveProfile} // Trigger success modal on click
             style={styles.saveButton}
           />
         </ScrollView>
       </KeyboardAvoidingView>
 
+      {/* Success Modal */}
+      <Modal
+        transparent
+        visible={showSuccessModal}
+        animationType="fade"
+        onRequestClose={() => setShowSuccessModal(false)}
+      >
+        <View style={styles.modalOverlay} onStartShouldSetResponder={() => { setShowSuccessModal(false); return true; }}>
+          <View style={styles.modalBox}>
+            <Image source={icons.X} style={styles.successIcon} />
+            <Text style={styles.modalTitle}>Congratulations!</Text>
+            <Text style={styles.modalMessage}>
+              Your account is ready to use. You will be redirected to the Home page in a few seconds..
+            </Text>
+            <CustomButton
+              title="Browse Home"
+              onPress={() => console.log("Navigate to Home")}
+              style={styles.modalButton}
+            />
+          </View>
+        </View>
+      </Modal>
+
+      {/* Image Picker Modal */}
       <Modal
         transparent
         visible={showImagePicker}
@@ -226,26 +223,20 @@ useEffect(() => {
             <Text style={styles.modalTitle}>Choose Image Source</Text>
             <CustomButton
               title="Use Camera"
-              onPress={() => {
-                pickImage("camera");
-              }}
+              onPress={() => pickImage("camera")}
               style={styles.modalButton}
             />
             <CustomButton
               title="Use Gallery"
-              onPress={() => {
-                pickImage("gallery");
-              }}
+              onPress={() => pickImage("gallery")}
               style={styles.modalButton}
             />
-           
             <CustomButton
               title="Cancel"
               onPress={() => setShowImagePicker(false)}
               style={styles.modalButton}
             />
-             {/* Added delete button */}
-             <CustomButton
+            <CustomButton
               title="Delete Image"
               onPress={deleteImage}
               style={styles.deleteButton}
@@ -258,10 +249,11 @@ useEffect(() => {
 };
 
 export default UserProfile;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFFFFF", // Fond blanc pour un look propre et moderne
+    backgroundColor: "#FFFFFF", // Clean and modern white background
     paddingTop: 30,
   },
   keyboardAvoiding: {
@@ -280,30 +272,25 @@ const styles = StyleSheet.create({
     height: 120,
     borderRadius: 60,
     borderWidth: 3,
-    borderColor: "#0286FF", // Ajout d'une bordure autour de l'image
+    borderColor: "#0286FF",
     marginBottom: 15,
   },
   cameraIcon: {
     position: "absolute",
     bottom: 0,
-    right: 5,
-    backgroundColor: "#0286FF",
+    left: 185,
+    backgroundColor: "#69BFF8",
     padding: 10,
     borderRadius: 25,
-    borderWidth: 2,
-    borderColor: "",
+    borderWidth: 1,
+    borderColor: "#0286FF",
   },
   cameraIconImage: {
     width: 20,
     height: 20,
     tintColor: "#FFFFFF",
   },
-  illustration: {
-    width: "100%",
-    height: 200,
-    alignSelf: "center",
-    bottom:10,
-  },
+
   genderContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
@@ -316,29 +303,24 @@ const styles = StyleSheet.create({
     borderColor: "#0286FF",
     width: "45%",
     alignItems: "center",
-    backgroundColor: "#F3F4F6", // Fond gris clair pour les options de genre
+    backgroundColor: "#F3F4F6",
   },
   genderSelected: {
-    backgroundColor: "#0286FF", // Changer la couleur de fond lorsque sélectionné
+    backgroundColor: "#0286FF",
     borderColor: "#0286FF",
   },
   genderText: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#0286FF", // Mettre en avant le texte du genre
+    color: "#0286FF",
+  },
+  genderSelectedText: {
+    color: "#FFFFFF",
   },
   saveButton: {
     marginTop: 30,
     paddingVertical: 12,
     backgroundColor: "#0286FF",
-    borderRadius: 30,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  deleteButton: {
-    marginTop: 20,
-    paddingVertical: 12,
-    backgroundColor: "#FF3B60",
     borderRadius: 30,
     alignItems: "center",
     justifyContent: "center",
@@ -371,6 +353,14 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     alignItems: "center",
   },
+  deleteButton: {
+    marginTop: 12,
+    width: "100%",
+    paddingVertical: 12,
+    backgroundColor: "#FF3B60",
+    borderRadius: 30,
+    alignItems: "center",
+  },
   progressBarContainer: {
     width: "100%",
     height: 10,
@@ -390,33 +380,22 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginVertical: 10,
   },
-  inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#F3F4F6",
-    borderRadius: 25,
-    borderWidth: 1,
-    borderColor: "#D1D5DB",
-    paddingHorizontal: 15,
-    height: 50,
+  successIcon: {
+    width: 53,
+    height: 53,
     marginBottom: 20,
   },
-  input: {
-    flex: 1,
+  modalTitlee: {
+    fontSize: 24,
+    fontWeight: "700",
+    color: "#111827",
+    textAlign: "center",
+    marginBottom: 12,
+  },
+  modalMessage: {
     fontSize: 16,
-    color: "#333",
-    paddingVertical: 10,
-    textAlign: "left",
-  },
-  icon: {
-    width: 24,
-    height: 24,
-    marginRight: 10,
-  },
-  label: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#333",
-    marginBottom: 8,
+    color: "#6B7280",
+    textAlign: "center",
+    marginBottom: 20,
   },
 });

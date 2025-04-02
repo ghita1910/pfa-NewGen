@@ -20,11 +20,9 @@ const SignIn = () => {
   
   const router = useRouter();
 
-<<<<<<< HEAD
   const handleForgotPassword = () => {
-    router.push("/(auth)/forgotpassword"); // Remplacez par le chemin de la page Forgot Password
+    router.push("./forgotpassword"); 
   };
-=======
   // États pour les champs du formulaire
   const [emailOrPhone, setEmailOrPhone] = useState("");
   const [password, setPassword] = useState("");
@@ -50,13 +48,13 @@ const SignIn = () => {
     }
   
     try {
-      const apiUrl = config.getApiUrl();  // Récupérer l'URL dynamique
+      const apiUrl = await config.getApiUrl();  // Récupérer l'URL dynamique
       console.log('URL utilisée:', apiUrl);
       
 
       console.log("Envoi de la demande de connexion...");
 
-      const response = await axios.post("http://10.10.1.190:8000/auth/signin", {
+      const response = await axios.post(apiUrl+"/auth/signin", {
         email: emailOrPhone,
         password: password,
       });
@@ -87,7 +85,6 @@ const SignIn = () => {
     }
   };
   
->>>>>>> BackEndSignin
 
   return (
     <ImageBackground style={styles.background} resizeMode="cover">
