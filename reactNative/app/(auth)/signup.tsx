@@ -140,7 +140,7 @@ const SignUp = () => {
                 I accept the{" "}
                 <Text
                   style={styles.linkText}
-                  onPress={() => router.push("/(auth)/termsconditions")}
+                  onPress={() => router.push("./termsconditions")}
                 >
                   Terms & Conditions
                 </Text>
