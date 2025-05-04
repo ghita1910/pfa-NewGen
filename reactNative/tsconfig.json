@@ -3,11 +3,10 @@
   "compilerOptions": {
     "strict": true,
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@/*": ["./*"]
     },
-    "jsx": "react-native"  // Add this line to enable JSX syntax
+    "jsx": "react-native",
+    "typeRoots": ["./types", "./node_modules/@types"]  
   },
   "include": [
     "**/*.ts",

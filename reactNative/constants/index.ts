@@ -50,7 +50,7 @@ import point from "@/assets/icons/point.png";
 import locatin from "@/assets/icons/locatin.png";
 import ckeckbll from "@/assets/icons/checkbleu.svg";
 
-
+import calend from "@/assets/icons/calen.png";
 import profile from "@/assets/icons/profile.png";
 import search from "@/assets/icons/search.png";
 import selectedMarker from "@/assets/icons/selected-marker.png";
@@ -68,6 +68,7 @@ import param from "@/assets/icons/param.jpg";
 import backk1 from "@/assets/images/backk1.avif"
 import tourn from "@/assets/images/tourn.png"
 import neww from "@/assets/images/new.jpeg"
+import specc from "@/assets/images/spec.jpg"
 
 import maison from "@/assets/images/maison.avif"
 import house from "@/assets/images/house.jpg"
@@ -75,6 +76,7 @@ import OIp from "@/assets/images/OIP.jpeg"
 import maisonnn from "@/assets/images/misonn.png"
 import wave from "@/assets/images/wave.jpeg"
 import prof from "@/assets/images/prof.png"
+import pay from "@/assets/icons/pay.png"
 
 import meak1 from "@/assets/images/meak11.png"
 
@@ -84,12 +86,169 @@ import satisfaction from "@/assets/images/satisfaction.jpg"
 import rep from "@/assets/images/reparation.jpg"
 import servv from "@/assets/images/servv.jpg"
 import meak from "@/assets/images/meak.jpg"
+import serr from "@/assets/images/serrv.jpeg"
+
+import spac from "@/assets/images/spec.jpg"
 
 import join from "@/assets/images/joinus.jpg"
 import fleche from "@/assets/images/fleche.avif"
+import dark from "@/assets/icons/dark.png"
 
 import cam from "@/assets/icons/cam.png"
 import checkno from "@/assets/icons/checknoir.svg"
+
+import inb from "@/assets/icons/inbox.png"
+
+import bokinn from "@/assets/icons/bokinn.jpg"
+import filt from "@/assets/icons/filter.jpg"
+
+
+
+
+import cl from "@/assets/icons/claniing.png"   
+import pain from "@/assets/icons/pain.png"   
+
+
+import painn from "@/assets/icons/painn.png"   
+
+import launn from "@/assets/icons/laun.png"   
+
+
+import mart from "@/assets/icons/mart.png"  
+
+import plumb from "@/assets/icons//plumb.png"   
+
+import shift from "@/assets/icons/shift.png"   
+
+import mor from "@/assets/icons/more.png"  
+
+import clll from "@/assets/icons/clayn.png"  
+
+import paintt from "@/assets/icons/painttt.png"  
+import clemol from "@/assets/icons/clemolete.png"  
+
+import notif from "@/assets/icons/notif.png"  
+
+import enregg from "@/assets/icons/enregg.jpg"  
+
+import fil from "@/assets/icons/filtt.png"  
+
+import enrr from "@/assets/icons/enrr.png"  
+import beau from "@/assets/icons/beauty.png"  
+import acr from "@/assets/icons/acrep.png"  
+
+import voitrep from "@/assets/icons/voitrep.png"  
+
+import elecrep from "@/assets/icons/elecrep.png"  
+
+import mass from "@/assets/icons/mas.png"  
+
+import help from "@/assets/icons/helpp.png"  
+
+import inv from "@/assets/icons/inv.webp"  
+import ihelp from "@/assets/icons/ihelp.png"
+
+import invitefriend from "@/assets/icons/invfriend.png" 
+import profiledilo from "@/assets/icons/profiledilo.png" 
+import moore from "@/assets/icons/moore.png" 
+import edit from "@/assets/icons/edit.png" 
+import paypal from "@/assets/icons/paypal.png" 
+import mastercard from "@/assets/icons/mastercard.png" 
+import aple from "@/assets/icons/aple.png" 
+import serv4 from "@/assets/icons/Services4.webp" 
+
+import enreg from "@/assets/icons/enreg.png" 
+
+
+
+
+
+
+
+
+
+export const icons = {
+  arrowDown,
+  arrowUp,
+  backArrow,
+  chat,
+  checkmark,
+  close,
+  dollar,
+  email,
+  eyecross,
+  google,
+  home,
+  list,
+  lock,
+  map,
+  marker,
+  out,
+  person,
+  pin,
+  point,
+  profile,
+  search,
+  selectedMarker,
+  star,
+  target,
+  to,
+  X,
+  facebook,
+  insta,
+  apple,
+  check1,
+  param,
+  locatin,
+  birth,
+  cam,
+  terme1,
+  chekkk,
+  checkno,
+  ckeckbll,
+  calend,
+  inb,
+  bokinn,
+  filt,
+  cl,
+  pain,
+  painn,
+  launn,
+  mart,
+  plumb,
+  shift,
+  mor,
+  clll,
+  paintt,
+  clemol,
+  notif,
+  enregg,
+  fil,
+  enrr,
+  beau,
+  acr,
+  voitrep,
+  elecrep,
+  mass,
+  pay,
+  help,
+  dark,
+  ihelp,
+  invitefriend,
+  profiledilo,
+  moore,
+  edit,
+  paypal,
+  mastercard,
+  aple,
+  serv4,
+  enreg
+};
+
+
+
+
+
 
 
 
@@ -142,7 +301,11 @@ export const images = {
   neww,
   prof,
   meak,
-  meak1
+  meak1,
+  spac,
+  specc,
+ serr
+,
  
 };
 
@@ -151,46 +314,6 @@ export const images = {
 
 
 
-export const icons = {
-  arrowDown,
-  arrowUp,
-  backArrow,
-  chat,
-  checkmark,
-  close,
-  dollar,
-  email,
-  eyecross,
-  google,
-  home,
-  list,
-  lock,
-  map,
-  marker,
-  out,
-  person,
-  pin,
-  point,
-  profile,
-  search,
-  selectedMarker,
-  star,
-  target,
-  to,
-  X,
-  facebook,
-  insta,
-  apple,
-  check1,
-  param,
-  locatin,
-  birth,
-  cam,
-  terme1,
-  chekkk,
-  checkno,
-  ckeckbll
-};
 
 
 

@@ -36,7 +36,7 @@ const SignUp = () => {
       return;
     }
     console.log("Sign Up logic...");
-    router.push("/(auth)/detection");
+    router.push("/(tabs)/oo");
   };
 
   return (
