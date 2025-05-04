@@ -62,7 +62,7 @@ Mode sombre / clair configurable
 
 Accessibilité mobile améliorée (polices, contrastes, navigation simplifiée)
 
-8. 💬 Messagerie & feedback
+# 8. 💬 Messagerie & feedback
 Discussion directe avec les prestataires (optionnel ou via chatbot)
 
 Notation et avis sur les prestataires après chaque service
