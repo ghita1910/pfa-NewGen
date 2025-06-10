@@ -7,12 +7,14 @@ import {
   Image,
   ScrollView,
   Alert,
+  ImageBackground,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { icons, images } from "@/constants";
 import CustomButton from "@/components/CustomButton";
 import InputField from "@/components/InputField";
+import { AntDesign, Ionicons } from '@expo/vector-icons';
 
 const ForgotPassword = () => {
   const router = useRouter();
@@ -36,13 +38,18 @@ const ForgotPassword = () => {
   };
 
   return (
+     <ImageBackground
+                    source={images.fondecran13}
+                    style={styles.background}
+                    resizeMode="cover"
+                  >
     <SafeAreaView style={styles.safeArea}>
-      <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-        <Image source={icons.backArrow} style={styles.backIcon} />
-      </TouchableOpacity>
+       <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
+                 <AntDesign name="arrowleft" size={20} color="#fff" />
+               </TouchableOpacity>
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <Image source={images.tourn} style={styles.illustration} />
+        <Image source={images.meak1} style={styles.illustration} />
         <Text style={styles.title}>Forgot Password</Text>
         <Text style={styles.subtitle}>
           Select which contact details should we use to reset your password
@@ -88,16 +95,21 @@ const ForgotPassword = () => {
           />
         ) : (
           <View style={styles.inputWrapper}>
-            <InputField
-              label={viaEmail ? "Enter your email" : "Enter your phone number"}
-              icon={viaEmail ? icons.email : icons.chat}
-              keyboardType={viaEmail ? "email-address" : "phone-pad"}
-              placeholder={viaEmail ? "example@email.com" : "+212 6 12 34 56 78"}
-              value={viaEmail ? email : phone}
-              onChangeText={(text) =>
-                viaEmail ? setEmail(text) : setPhone(text)
-              }
-            />
+           <InputField
+  label={viaEmail ? "Enter your email" : "Enter your phone number"}
+  placeholder={viaEmail ? "example@email.com" : "+212 6 12 34 56 78"}
+  value={viaEmail ? email : phone}
+  onChangeText={(text) => (viaEmail ? setEmail(text) : setPhone(text))}
+  keyboardType={viaEmail ? "email-address" : "phone-pad"}
+  iconComponent={
+    viaEmail ? (
+      <Ionicons name="mail-unread-outline" size={22} color="#7B2CBF" />
+    ) : (
+      <Ionicons name="call-sharp" size={22} color="#7B2CBF" />
+    )
+  }
+/>
+
 
             <CustomButton
               title={loading ? "Sending..." : "Send Code"}
@@ -111,15 +123,20 @@ const ForgotPassword = () => {
         )}
       </ScrollView>
     </SafeAreaView>
+    </ImageBackground>
   );
 };
 
 export default ForgotPassword;
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    
+  },
   safeArea: {
     flex: 1,
-    backgroundColor: "#f4f4f9",
+   
   },
   scrollContainer: {
     flexGrow: 1,
@@ -139,6 +156,20 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 4 },
+  },
+   backBtn: {
+    backgroundColor: "#7B2CBF",
+    padding: 10,
+    borderRadius: 12,
+    shadowColor: "#5A189A",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12,
+    shadowRadius: 6,
+    elevation: 3,
+    position: "absolute",
+    top: 55,
+    left: 18,
+    zIndex: 10,
   },
   title: {
     fontSize: 34,
@@ -172,8 +203,8 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
   },
   selectedOption: {
-    borderColor: "#3b82f6",
-    backgroundColor: "#eff6ff",
+    borderColor:"rgba(163, 119, 245, 0.28)",
+   backgroundColor: "rgba(163, 119, 245, 0.28)",
   },
   optionContent: {
     flexDirection: "row",
@@ -183,7 +214,7 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     marginRight: 12,
-    tintColor: "#3b82f6",
+    tintColor: "#7B2CBF",
   },
   optionText: {
     fontSize: 18,
@@ -193,14 +224,15 @@ const styles = StyleSheet.create({
   continueButton: {
     marginTop: 30,
     width: "80%",
-    backgroundColor: "#3b82f6",
+    backgroundColor: "#7B2CBF",
     borderRadius: 12,
     paddingVertical: 15,
     alignItems: "center",
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 4 },
+    
+   shadowColor: "#7B2CBF",
+    shadowOpacity: 0.3,
+    shadowOffset: { width: 0, height: 15 },
+    shadowRadius: 10,
   },
   inputWrapper: {
     marginTop: 30,
@@ -210,30 +242,28 @@ const styles = StyleSheet.create({
   sendButton: {
     marginTop: 15,
     width: "80%",
-    backgroundColor: "#3b82f6",
+    backgroundColor: "#7B2CBF",
     borderRadius: 12,
     paddingVertical: 15,
     alignItems: "center",
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 4 },
+    
+   shadowColor: "#7B2CBF",
+    shadowOpacity: 0.3,
+    shadowOffset: { width: 0, height: 15 },
+    shadowRadius: 10,
   },
   backButton: {
+    backgroundColor: "#7B2CBF",
+    padding: 10,
+    borderRadius: 12,
+    shadowColor: "#5A189A",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12,
+    shadowRadius: 6,
+    elevation: 3,
     position: "absolute",
-    top: 40,
-    left: 20,
-    backgroundColor: "#ffffff",
-    borderRadius: 25,
-    width: 50,
-    height: 50,
-    alignItems: "center",
-    justifyContent: "center",
-    elevation: 5,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 4 },
+    top: 55,
+    left: 18,
     zIndex: 10,
   },
   backIcon: {

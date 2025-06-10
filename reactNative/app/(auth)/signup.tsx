@@ -9,13 +9,19 @@ import {
   Modal,
   Image,
   ScrollView,
+  ImageBackground,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import * as Animatable from "react-native-animatable";
+
 import { useRouter } from "expo-router";
 import CustomButton from "@/components/CustomButton";
 import InputField from "@/components/InputField";
 import { icons, images } from "@/constants";
 import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import config from "../../config";
 
 const SignUp = () => {
   const router = useRouter();
@@ -24,22 +30,70 @@ const SignUp = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [agreeTerms, setAgreeTerms] = useState(false);
-  const [agreeMarketing, setAgreeMarketing] = useState(false);
   const [showModal, setShowModal] = useState(false);
-
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const handleSignUp = () => {
+  const [errorEmail, setErrorEmail] = useState("");
+  const [errorPassword, setErrorPassword] = useState("");
+  const [errorConfirmPassword, setErrorConfirmPassword] = useState("");
+
+  const handleSignUp = async () => {
+    setErrorEmail("");
+    setErrorPassword("");
+    setErrorConfirmPassword("");
+
     if (!agreeTerms) {
       setShowModal(true);
       return;
     }
-    console.log("Sign Up logic...");
-    router.push("/(auth)/detection");
+
+    if (!emailOrPhone || !password || !confirmPassword) {
+      if (!emailOrPhone) setErrorEmail("Ce champ est requis.");
+      if (!password) setErrorPassword("Ce champ est requis.");
+      if (!confirmPassword) setErrorConfirmPassword("Ce champ est requis.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setErrorConfirmPassword("Les mots de passe ne correspondent pas.");
+      return;
+    }
+
+    try {
+      const apiUrl = await config.getApiUrl();
+      const payload = usePhone ? { tel: emailOrPhone } : { email: emailOrPhone };
+
+      await axios.post(apiUrl + "/auth/check", payload);
+
+      const signupData = {
+        ...(usePhone ? { tel: emailOrPhone } : { email: emailOrPhone }),
+        password: password,
+      };
+
+      await AsyncStorage.setItem("signupData", JSON.stringify(signupData));
+      router.push("/(auth)/detection");
+    } catch (error: any) {
+      if (error.response && error.response.status === 400) {
+        const detail = error.response.data.detail;
+        if (detail.toLowerCase().includes("email")) {
+          setErrorEmail(detail);
+        } else if (detail.toLowerCase().includes("téléphone")) {
+          setErrorEmail(detail);
+        }
+      } else {
+        setErrorEmail("Erreur inattendue.");
+        console.error("❌ Axios error:", error);
+      }
+    }
   };
 
   return (
+  <ImageBackground
+                   source={images.fondecran13}
+                   style={styles.background}
+                   resizeMode="cover"
+                 >
     <SafeAreaView style={styles.safeArea}>
       <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
         <Ionicons name="chevron-back" size={22} color="#fff" />
@@ -53,13 +107,23 @@ const SignUp = () => {
           contentContainerStyle={styles.scrollContainer}
           keyboardShouldPersistTaps="handled"
         >
-          <Image
-            source={images.tourn}
-            style={styles.illustration}
-            resizeMode="contain"
-          />
+        <Animatable.Image
+  animation="fadeInDown"
+  duration={1000}
+  delay={100}
+  source={images.meak1}
+  style={styles.illustration}
+  resizeMode="contain"
+/>
 
-          <View style={styles.innerContainer}>
+          <Animatable.View
+  animation="fadeInUp"
+  duration={1200}
+  delay={200}
+  style={styles.innerContainer}
+>
+
+
             <Text style={styles.title}>Sign Up</Text>
             <Text style={styles.subtitle}>Create a new account</Text>
 
@@ -72,29 +136,36 @@ const SignUp = () => {
               </Text>
             </TouchableOpacity>
 
-            {usePhone ? (
-              <InputField
-                label="Phone Number"
-                placeholder="Enter phone number"
-                keyboardType="phone-pad"
-                icon={icons.chat}
-              />
-            ) : (
-              <InputField
-                label="Email"
-                placeholder="Enter email"
-                keyboardType="email-address"
-                icon={icons.email}
-              />
-            )}
+           <InputField
+  label={usePhone ? "Phone Number" : "Email"}
+  placeholder={`Enter ${usePhone ? "phone number" : "email"}`}
+  keyboardType={usePhone ? "phone-pad" : "email-address"}
+  iconComponent={
+    usePhone
+      ? <Ionicons name="call-outline" size={22} color="#7B2CBF" />
+      : <Ionicons name="mail-outline" size={22} color="#7B2CBF" />
+  }
+  value={emailOrPhone}
+  onChangeText={(text) => {
+    setEmailOrPhone(text);
+    setErrorEmail("");
+  }}
+/>
 
-            {/* Password Field */}
+            {errorEmail ? <Text style={styles.errorText}>{errorEmail}</Text> : null}
+
             <View style={styles.passwordContainer}>
               <InputField
                 label="Password"
                 placeholder="Enter Password"
                 secureTextEntry={!showPassword}
-                icon={icons.lock}
+                iconComponent={<Ionicons name="lock-closed-outline" size={22} color="#7B2CBF" />
+}
+                value={password}
+                onChangeText={(text) => {
+                  setPassword(text);
+                  setErrorPassword("");
+                }}
               />
               <TouchableOpacity
                 style={styles.eyeIcon}
@@ -107,20 +178,23 @@ const SignUp = () => {
                 />
               </TouchableOpacity>
             </View>
+            {errorPassword ? <Text style={styles.errorText}>{errorPassword}</Text> : null}
 
-            {/* Confirm Password Field */}
             <View style={styles.passwordContainer}>
               <InputField
                 label="Confirm Password"
                 placeholder="Confirm Password"
                 secureTextEntry={!showConfirmPassword}
-                icon={icons.lock}
+                iconComponent={<Ionicons name="lock-closed-outline" size={22}  color="#7B2CBF" />}
+                value={confirmPassword}
+                onChangeText={(text) => {
+                  setConfirmPassword(text);
+                  setErrorConfirmPassword("");
+                }}
               />
               <TouchableOpacity
                 style={styles.eyeIcon}
-                onPress={() =>
-                  setShowConfirmPassword(!showConfirmPassword)
-                }
+                onPress={() => setShowConfirmPassword(!showConfirmPassword)}
               >
                 <Ionicons
                   name={showConfirmPassword ? "eye-off" : "eye"}
@@ -129,50 +203,45 @@ const SignUp = () => {
                 />
               </TouchableOpacity>
             </View>
-
-            {/* Terms & Conditions */}
-            <TouchableOpacity
-              style={styles.checkboxContainer}
-              onPress={() => setAgreeTerms(!agreeTerms)}
-            >
-              <View style={[styles.checkbox, agreeTerms && styles.checked]} />
-              <Text style={styles.checkboxText}>
-                I accept the{" "}
-                <Text
-                  style={styles.linkText}
-                  onPress={() => router.push("./termsconditions")}
-                >
-                  Terms & Conditions
-                </Text>
-              </Text>
-            </TouchableOpacity>
+            {errorConfirmPassword ? <Text style={styles.errorText}>{errorConfirmPassword}</Text> : null}
 
             <TouchableOpacity
-              style={styles.checkboxContainer}
-              onPress={() => setAgreeMarketing(!agreeMarketing)}
-            >
-              {/* Optional marketing agreement */}
-            </TouchableOpacity>
+  style={styles.checkboxContainer}
+  onPress={() => setAgreeTerms(!agreeTerms)}
+  activeOpacity={0.8}
+>
+  <View style={[styles.checkbox, agreeTerms && styles.checked]}>
+    {agreeTerms && (
+      <Ionicons name="checkmark-sharp" size={16} color="#fff" />
+    )}
+  </View>
+  <Text style={styles.checkboxText}>
+    I accept the{" "}
+    <Text
+      style={styles.linkText}
+      onPress={() => router.push("/pages/PrivacyPolicyScreen")}
+    >
+      Terms & Conditions
+    </Text>
+  </Text>
+</TouchableOpacity>
 
-            <CustomButton
-              title="Next"
-              onPress={handleSignUp}
-              style={styles.button}
-            />
+
+            <CustomButton title="Next" onPress={handleSignUp} style={styles.button} />
 
             <TouchableOpacity
               onPress={() => router.push("/(auth)/signin")}
               style={styles.loginTextContainer}
             >
               <Text style={styles.signUpText}>
-                Already have an account?{" "}
-                <Text style={styles.signUpLink}>Log in</Text>
+                Already have an account? <Text style={styles.signUpLink}>Log in</Text>
               </Text>
             </TouchableOpacity>
-          </View>
+          </Animatable.View>
+
         </ScrollView>
 
-        {/* Modal */}
+        {/* Modal pour les conditions */}
         <Modal
           transparent
           visible={showModal}
@@ -181,9 +250,10 @@ const SignUp = () => {
         >
           <View style={styles.modalOverlay}>
             <View style={styles.modalBox}>
-              <View style={styles.iconWrapper}>
-                <Image source={icons.home} style={styles.modalIcon} />
-              </View>
+             <View style={styles.iconWrapper}>
+  <Ionicons name="home-outline" size={36} color="#7B2CBF" />
+</View>
+
               <Text style={styles.modalTitle}>
                 Please accept terms and conditions
               </Text>
@@ -201,15 +271,28 @@ const SignUp = () => {
         </Modal>
       </KeyboardAvoidingView>
     </SafeAreaView>
+    </ImageBackground>  
   );
 };
 
 export default SignUp;
 
 const styles = StyleSheet.create({
+  // (styles remain unchanged...)
+  errorText: {
+    color: "red",
+    marginBottom: 8,
+    marginTop: -8,
+    fontSize: 13,
+    alignSelf: "flex-start",
+  },
+  background:{
+    flex: 1,
+  },
+
   safeArea: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
+   
   },
   container: {
     flex: 1,
@@ -250,7 +333,7 @@ const styles = StyleSheet.create({
   },
   toggleText: {
     fontSize: 14,
-    color: "#3B82F6",
+    color: "#7B2CBF",
     fontWeight: "600",
   },
   passwordContainer: {
@@ -275,12 +358,12 @@ const styles = StyleSheet.create({
     height: 20,
     borderRadius: 6,
     borderWidth: 1.5,
-    borderColor: "#CBD5E1",
+    borderColor: "black",
     marginRight: 12,
   },
   checked: {
-    backgroundColor: "#3B82F6",
-    borderColor: "#3B82F6",
+    backgroundColor: "#7B2CBF",
+    borderColor: "#7B2CBF",
   },
   checkboxText: {
     flex: 1,
@@ -289,13 +372,17 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   linkText: {
-    color: "#3B82F6",
+    color: "#7B2CBF",
     fontWeight: "600",
     textDecorationLine: "underline",
   },
   button: {
     marginTop: 20,
     width: "80%",
+    shadowColor: "#7B2CBF",
+    shadowOpacity: 0.3,
+    shadowOffset: { width: 0, height: 15 },
+    shadowRadius: 10,
   },
   loginTextContainer: {
     marginTop: 16,
@@ -307,11 +394,11 @@ const styles = StyleSheet.create({
     color: "#475569",
   },
   signUpLink: {
-    color: "#0284C7",
+    color: "#7B2CBF",
     fontWeight: "bold",
   },
   backButton: {
-    backgroundColor: "#1F2937",
+    backgroundColor: "#7B2CBF",
     borderRadius: 24,
     padding: 8,
     marginRight: 340,
@@ -336,7 +423,8 @@ const styles = StyleSheet.create({
     width: "80%",
   },
   iconWrapper: {
-    backgroundColor: "#E0F2FE",
+   backgroundColor: "#F3E8FF",
+
     padding: 12,
     borderRadius: 50,
     marginBottom: 12,

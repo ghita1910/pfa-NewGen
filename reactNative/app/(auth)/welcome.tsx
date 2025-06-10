@@ -7,9 +7,11 @@ import {
   TouchableOpacity,
   View,
   StyleSheet,
+  ImageBackground,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Swiper from "react-native-swiper";
+import {images } from "@/constants";
 
 import CustomButton from "@/components/CustomButton";
 import { onboarding } from "@/constants";
@@ -21,6 +23,11 @@ const Onboarding = () => {
   const isLastSlide = activeIndex === onboarding.length - 1;
 
   return (
+     <ImageBackground
+                     source={images.fondecran13}
+                     style={styles.background}
+                     resizeMode="cover"
+                   >
     <SafeAreaView style={styles.container}>
       {/* Skip Button */}
       <TouchableOpacity
@@ -78,6 +85,7 @@ const Onboarding = () => {
         style={styles.button}
       />
     </SafeAreaView>
+    </ImageBackground>
   );
 };
 
@@ -85,11 +93,14 @@ export default Onboarding;
 
 
 const styles = StyleSheet.create({
+  background:{
+    flex: 1,
+  },
   container: {
     flex: 1,
     alignItems: "center",
     justifyContent: "space-between",
-    backgroundColor: "white",
+   
   },
   skipButton: {
     width: "100%",
@@ -98,7 +109,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   skipText: {
-    color: "black",
+    color: "#7b2cbf",
     fontSize: 16,
     fontWeight: "bold",
   },
@@ -109,8 +120,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   image: {
-    width: "100%",
-    height: 300,
+    width: "150%",
+    height: 400,
   },
   titleContainer: {
     flexDirection: "row",
@@ -153,10 +164,10 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: "#C4C4C4",
+    backgroundColor: "#D1B3F1", // 💜 violet clair
   },
   activeDot: {
     width: 24,
-    backgroundColor: "#0286FF",
+   backgroundColor: "#7B2CBF", // 💜 violet actif
   },
 });

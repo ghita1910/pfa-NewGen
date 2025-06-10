@@ -15,7 +15,7 @@ const TermsAndConditions = () => {
   const router = useRouter();
 
   const handleAccept = () => {
-    router.push("/(auth)/provider-register");
+   // router.push("/(auth)/provider-register");
   };
 
   return (
