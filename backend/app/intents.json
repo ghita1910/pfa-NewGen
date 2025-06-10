@@ -1,0 +1,19 @@
+{
+  "intents": [
+    {
+      "tag": "salutation",
+      "patterns": ["Bonjour", "Salut", "Coucou", "Hey"],
+      "responses": ["Bonjour, comment puis-je vous aider ?"]
+    },
+    {
+      "tag": "demande_service",
+      "patterns": ["Je veux un service", "Je cherche un prestataire", "Peux-tu m’aider pour un service ?"],
+      "responses": ["D'accord, quel type de service recherchez-vous ?"]
+    },
+    {
+      "tag": "au_revoir",
+      "patterns": ["Au revoir", "Bye", "À bientôt"],
+      "responses": ["À bientôt !"]
+    }
+  ]
+}
